@@ -111,6 +111,41 @@ namespace PhoneBook
             Console.WriteLine($"Name: {newName}\n\tEmail: {newEmail}");
             string? newPhone = Validation.PhoneNumber();
 
+            // Getting category fro new contact
+            Console.Clear();
+            int newCategoryId;
+            Console.WriteLine($"Name: {newName}\n\tEmail: {newEmail}\tPhone: {newPhone}");
+            var newCategory = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Please select a category:")
+                    .PageSize(12)
+                    .AddChoices(categories.Select(c => c.Name))
+                    .AddChoices(new[] { "New Category", "Leave Blank"})
+                    );
+            if(newCategory == "Leave Blank")
+            {
+                newCategoryId = -1;
+            } else if(newCategory != "New category")
+            {
+                newCategoryId = categories.Find(c => c.Name == newCategory).Id;
+            } else
+            {
+                Console.WriteLine("Enter new category name");
+                string? newCategoryEntry = Console.ReadLine();
+                while (string.IsNullOrEmpty(newCategoryEntry) || categories.Exists(category => category.Name == newCategoryEntry))
+                {
+                    Console.WriteLine($"\"{newCategoryEntry}\" already exists, please try again");
+                    newCategoryEntry = Console.ReadLine();
+                }
+                
+                newCategoryId = query.AddCategory(newCategoryEntry);
+                    
+            }
+
+            query.AddContact(newName, newEmail, newPhone, newCategoryId);
+            Console.WriteLine($"{newName} successfully added. Press Enter to return to main menu");
+            Console.ReadLine();
+
         }
 
         private void AddCategoryMenu()

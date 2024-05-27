@@ -9,6 +9,12 @@
             db = context;
         }
 
+        public List<Contact> AllContacts()
+        {
+            return db.Contacts
+                    .OrderBy(c => c.Name).ToList();   
+        }
+
         public List<Category> AllCategories()
         {
 
@@ -16,10 +22,17 @@
                     .OrderBy(c => c.Name).ToList();
         }
 
-        public void AddCategory(string name)
+        public int AddCategory(string name)
         {
+            Category newCategory = new Category { Name = name };
+            db.Categories.Add(newCategory);
+            db.SaveChanges();
+            return newCategory.Id;
+        }
 
-            db.Categories.Add(new Category { Name = name });
+        public void AddContact(string name, string email, string phone, int categoryId)
+        {
+            db.Contacts.Add(new Contact { Name = name, Email = email, PhoneNumber = phone, CategoryId = categoryId });
             db.SaveChanges();
         }
     }
