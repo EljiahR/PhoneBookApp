@@ -17,7 +17,6 @@ namespace PhoneBook
 
         public List<Category> AllCategories()
         {
-            //using var db = new PhoneBookContext();
 
             return db.Categories
                     .OrderBy(c => c.Name).ToList();
@@ -25,9 +24,9 @@ namespace PhoneBook
 
         public void AddCategory(string name)
         {
-            //using var db = new PhoneBookContext();
 
             db.Categories.Add(new Category { Name = name });
+            db.SaveChanges();
         }
     }
 }

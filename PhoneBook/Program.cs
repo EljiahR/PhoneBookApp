@@ -1,4 +1,5 @@
 ﻿using PhoneBook;
 
-var menu = new Menu(new PhoneBookContext());
+using var context = new PhoneBookContext();
+var menu = new Menu(context);
 menu.MainMenu();

@@ -75,7 +75,14 @@ namespace PhoneBook
 
         private void ViewCategoriesMenu()
         {
-            throw new NotImplementedException();
+            var categories = query.AllCategories();
+            foreach (var category in categories)
+            {
+                Console.WriteLine(category.Name);
+            }
+
+            Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
+            Console.ReadLine();
         }
 
         private void AddContactMenu()
