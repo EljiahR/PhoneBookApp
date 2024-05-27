@@ -65,7 +65,14 @@ namespace PhoneBook
 
         private void ViewContactsMenu()
         {
-            throw new NotImplementedException();
+            var contacts = query.AllContacts();
+            foreach (var contact in contacts)
+            {
+                Console.WriteLine(contact.Name);
+            }
+
+            Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
+            Console.ReadLine();
         }
 
         private void ViewCategoriesMenu()
@@ -98,6 +105,11 @@ namespace PhoneBook
             Console.Clear();
             Console.WriteLine($"Name: {newName}\n");
             string? newEmail = Validation.Email();
+
+            // Getting new contact phone number
+            Console.Clear();
+            Console.WriteLine($"Name: {newName}\n\tEmail: {newEmail}");
+            string? newPhone = Validation.PhoneNumber();
 
         }
 
