@@ -82,7 +82,23 @@ namespace PhoneBook
 
         private void AddContactMenu()
         {
-            throw new NotImplementedException();
+            var categories = query.AllCategories();
+            Console.Clear();
+            
+            // Getting new contact name
+            Console.WriteLine("Please enter new contact's name:");
+            string? newName = Console.ReadLine();
+            while (string.IsNullOrEmpty(newName))
+            {
+                Console.WriteLine("Name cannot be blank, please enter new contact name:");
+                newName = Console.ReadLine();
+            }
+
+            // Getting new contact email or N/A if left blank
+            Console.Clear();
+            Console.WriteLine($"Name: {newName}\n");
+            string? newEmail = Validation.Email();
+
         }
 
         private void AddCategoryMenu()
