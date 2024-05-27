@@ -1,9 +1,4 @@
 ﻿using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneBook
 {
@@ -15,7 +10,7 @@ namespace PhoneBook
         {
             query = new Query(context);
         }
-        
+
         private const string _ViewAllContacts = "View All Contacts";
         private const string _ViewAllCategories = "Filter Contacts By Category";
         private const string _AddNewContact = "Add New Contact";
@@ -41,7 +36,7 @@ namespace PhoneBook
                     .PageSize(_mainOptions.Count)
                     .AddChoices(_mainOptions));
 
-                switch(option)
+                switch (option)
                 {
                     case _ViewAllContacts:
                         ViewContactsMenu();
@@ -96,12 +91,12 @@ namespace PhoneBook
             Console.Clear();
             Console.WriteLine("Enter new category name or leave blank to return to main menu:");
             string? newCategory = Console.ReadLine();
-            while(!string.IsNullOrEmpty(newCategory) && categories.Exists(category => category.Name == newCategory))
+            while (!string.IsNullOrEmpty(newCategory) && categories.Exists(category => category.Name == newCategory))
             {
                 Console.WriteLine($"\"{newCategory}\" already exists, please try again or leave black to return to main menu:");
                 newCategory = Console.ReadLine();
             }
-            if(!string.IsNullOrEmpty(newCategory))
+            if (!string.IsNullOrEmpty(newCategory))
             {
                 Console.Clear();
                 query.AddCategory(newCategory);
