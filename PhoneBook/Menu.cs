@@ -9,6 +9,13 @@ namespace PhoneBook
 {
     internal class Menu
     {
+        private Query query { get; set; }
+
+        public Menu(PhoneBookContext context)
+        {
+            query = new Query(context);
+        }
+        
         private const string _ViewAllContacts = "View All Contacts";
         private const string _ViewAllCategories = "Filter Contacts By Category";
         private const string _AddNewContact = "Add New Contact";
@@ -17,16 +24,17 @@ namespace PhoneBook
         private const string _EditDeleteCategory = "Edit/Delete Category";
         private const string _ExitMenu = "Exit Program";
 
-        private readonly static List<string> _mainOptions = new()
+        private readonly List<string> _mainOptions = new()
         {
             _ViewAllContacts, _ViewAllCategories, _AddNewContact, _AddNewCategory
             , _EditDeleteContact, _EditDeleteCategory, _ExitMenu
         };
-        public static void MainMenu()
+        public void MainMenu()
         {
             string? option;
             do
             {
+                Console.Clear();
                 option = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                     .Title("Main Menu")
@@ -36,10 +44,10 @@ namespace PhoneBook
                 switch(option)
                 {
                     case _ViewAllContacts:
-                        ContactsMenu();
+                        ViewContactsMenu();
                         break;
                     case _ViewAllCategories:
-                        CategoriesMenu();
+                        ViewCategoriesMenu();
                         break;
                     case _AddNewContact:
                         AddContactMenu();
@@ -60,32 +68,48 @@ namespace PhoneBook
             Console.WriteLine("Goodbye!");
         }
 
-        public static void ContactsMenu()
+        private void ViewContactsMenu()
         {
             throw new NotImplementedException();
         }
 
-        public static void CategoriesMenu()
+        private void ViewCategoriesMenu()
         {
             throw new NotImplementedException();
         }
 
-        public static void AddContactMenu()
+        private void AddContactMenu()
         {
             throw new NotImplementedException();
         }
 
-        public static void AddCategoryMenu()
+        private void AddCategoryMenu()
+        {
+            var categories = query.AllCategories();
+            Console.Clear();
+            Console.WriteLine("Enter new category name or leave blank to return to main menu:");
+            string? newCategory = Console.ReadLine();
+            while(!string.IsNullOrEmpty(newCategory) && categories.Exists(category => category.Name == newCategory))
+            {
+                Console.WriteLine($"\"{newCategory}\" already exists, please try again or leave black to return to main menu:");
+                newCategory = Console.ReadLine();
+            }
+            if(!string.IsNullOrEmpty(newCategory))
+            {
+                Console.Clear();
+                query.AddCategory(newCategory);
+                Console.WriteLine($"\"{newCategory}\" added successfully\n");
+                Console.WriteLine("Press Enter to return to main menu");
+                Console.ReadLine();
+            }
+        }
+
+        private void EditContactsMenu()
         {
             throw new NotImplementedException();
         }
 
-        public static void EditContactsMenu()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void EditCategoriesMenu()
+        private void EditCategoriesMenu()
         {
             throw new NotImplementedException();
         }
