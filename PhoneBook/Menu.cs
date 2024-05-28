@@ -71,7 +71,7 @@ namespace PhoneBook
                 Console.WriteLine(contact.Name);
                 Console.WriteLine($"\t{contact.Email}");
                 Console.WriteLine($"\t{contact.PhoneNumber}");
-                Console.WriteLine($"\t{(contact.CategoryId == -1 ? "N/A" : contact.Category.Name)}\n");
+                Console.WriteLine($"\t{(contact.CategoryId == null ? "N/A" : contact.Category.Name)}\n");
             }
 
             Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
@@ -128,10 +128,7 @@ namespace PhoneBook
             if(newCategory == "Leave Blank")
             {
                 newCategoryId = -1;
-            } else if(newCategory != "New category")
-            {
-                newCategoryId = categories.Find(c => c.Name == newCategory).Id;
-            } else
+            } else if(newCategory == "New category")
             {
                 Console.WriteLine("Enter new category name");
                 string? newCategoryEntry = Console.ReadLine();
@@ -143,9 +140,13 @@ namespace PhoneBook
                         Console.WriteLine($"\"{newCategoryEntry}\" already exists, please try again");
                     newCategoryEntry = Console.ReadLine();
                 }
-                
+
                 newCategoryId = query.AddCategory(newCategoryEntry);
-                    
+            } else
+            {
+                
+                newCategoryId = categories.Find(c => c.Name == newCategory).Id;
+
             }
 
             query.AddContact(newName, newEmail, newPhone, newCategoryId);

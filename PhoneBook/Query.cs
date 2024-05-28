@@ -32,6 +32,12 @@
 
         public void AddContact(string name, string email, string phone, int categoryId)
         {
+            Contact newContact = new Contact { Name = name, Email = email, PhoneNumber = phone };
+            if(categoryId > 0)
+            { 
+                newContact.CategoryId = categoryId; 
+                newContact.Category = db.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+            }
             db.Contacts.Add(new Contact { Name = name, Email = email, PhoneNumber = phone, CategoryId = categoryId });
             db.SaveChanges();
         }

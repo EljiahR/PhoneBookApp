@@ -11,7 +11,7 @@ namespace PhoneBook
 {
     internal class Validation
     {
-        const string PhoneNumberRegex = @"^\d{3}-\d{3}-d{4}$";
+        const string PhoneNumberRegex = @"^\d{3}-\d{3}-\d{4}$";
         public static string Email()
         {
             Console.WriteLine("Please enter a valid email address or leave blank");
