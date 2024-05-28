@@ -69,6 +69,9 @@ namespace PhoneBook
             foreach (var contact in contacts)
             {
                 Console.WriteLine(contact.Name);
+                Console.WriteLine($"\t{contact.Email}");
+                Console.WriteLine($"\t{contact.PhoneNumber}");
+                Console.WriteLine($"\t{(contact.CategoryId == -1 ? "N/A" : contact.Category.Name)}\n");
             }
 
             Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
@@ -179,27 +182,46 @@ namespace PhoneBook
 
         private void EditCategoriesMenu()
         {
+            Console.Clear();
             var categories = query.AllCategories();
             var categoryNameToEdit = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("Please select a category to edit:")
+                    .Title("Please select a category to edit/delete:")
                     .PageSize(12)
                     .AddChoices(categories.Select(c => c.Name))
                     .AddChoices("Go back")
                     );
-            var categoryId = categories.Find(c => c.Name == categoryNameToEdit).Id;
-            // Newborn baby is making it difficult to even think about making these new category names a single function
-            Console.WriteLine("Enter new category name");
-            string? newCategoryName = Console.ReadLine();
-            while (string.IsNullOrEmpty(newCategoryName) || categories.Exists(category => category.Name == newCategoryName))
+            if(categoryNameToEdit != "Go back")
             {
-                if (string.IsNullOrEmpty(newCategoryName))
-                    Console.WriteLine("Cannot be blank");
+                var categoryId = categories.Find(c => c.Name == categoryNameToEdit).Id;
+                var option = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select option")
+                        .PageSize(3)
+                        .AddChoices(new[] { "Edit", "Delete" }));
+                    
+                if(option == "Edit")
+                {
+                    // Newborn baby is making it difficult to even think about making these new category names a single function
+                    Console.WriteLine("Enter new category name");
+                    string? newCategoryName = Console.ReadLine();
+                    while (string.IsNullOrEmpty(newCategoryName) || categories.Exists(category => category.Name == newCategoryName))
+                    {
+                        if (string.IsNullOrEmpty(newCategoryName))
+                            Console.WriteLine("Cannot be blank");
+                        else
+                            Console.WriteLine($"\"{newCategoryName}\" already exists, please try again");
+                        newCategoryName = Console.ReadLine();
+                    }
+                    query.UpdateCategory(categoryId, newCategoryName);
+                }
                 else
-                    Console.WriteLine($"\"{newCategoryName}\" already exists, please try again");
-                newCategoryName = Console.ReadLine();
+                {
+                    query.DeleteCategory(categoryId);
+                }
+                
             }
-            query.UpdateCategory(categoryId, newCategoryName);
+            
         }
     }
 }

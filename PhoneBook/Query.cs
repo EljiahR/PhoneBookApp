@@ -43,5 +43,13 @@
             categoryToUpdate.Name = newName;
             db.SaveChanges();
         }
+
+        public void DeleteCategory(int id) 
+        {
+            Category categoryToDelete = db.Categories
+                                            .Where(c => c.Id == id).First();
+            db.Remove(categoryToDelete);
+            db.SaveChanges();
+        }
     }
 }
