@@ -15,6 +15,11 @@
                     .OrderBy(c => c.Name).ToList();   
         }
 
+        public List<Contact> ContactByCategory(int id)
+        {
+            return db.Contacts.Where(c => c.CategoryId == id).ToList();
+        }
+
         public List<Category> AllCategories()
         {
 

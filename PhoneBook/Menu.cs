@@ -81,13 +81,24 @@ namespace PhoneBook
         private void ViewCategoriesMenu()
         {
             var categories = query.AllCategories();
-            foreach (var category in categories)
+            var option = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Select a category to view")
+                    .PageSize(5)
+                    .AddChoices(categories.Select(c => c.Name))
+                    .AddChoices("Go back"));
+            if(option != "Go back")
             {
-                Console.WriteLine(category.Name);
+                var contacts = query.ContactByCategory(categories.Find(c => c.Name == option).Id);
+                foreach(var contact in contacts)
+                {
+                    Console.WriteLine(contact.Name);
+                    Console.WriteLine($"\t{contact.Email}");
+                    Console.WriteLine($"\t{contact.PhoneNumber}");
+                }
+                Console.WriteLine("\nPress Enter to go back to main menu");
+                Console.ReadLine();
             }
-
-            Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
-            Console.ReadLine();
         }
 
         private void AddContactMenu()
