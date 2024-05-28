@@ -35,5 +35,13 @@
             db.Contacts.Add(new Contact { Name = name, Email = email, PhoneNumber = phone, CategoryId = categoryId });
             db.SaveChanges();
         }
+        
+        public void UpdateCategory(int id, string newName)
+        {
+            Category categoryToUpdate = db.Categories
+                                            .Where(c => c.Id == id).First();
+            categoryToUpdate.Name = newName;
+            db.SaveChanges();
+        }
     }
 }

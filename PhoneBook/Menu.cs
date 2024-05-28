@@ -134,7 +134,10 @@ namespace PhoneBook
                 string? newCategoryEntry = Console.ReadLine();
                 while (string.IsNullOrEmpty(newCategoryEntry) || categories.Exists(category => category.Name == newCategoryEntry))
                 {
-                    Console.WriteLine($"\"{newCategoryEntry}\" already exists, please try again");
+                    if (string.IsNullOrEmpty(newCategoryEntry))
+                        Console.WriteLine("Cannot be blank");
+                    else
+                        Console.WriteLine($"\"{newCategoryEntry}\" already exists, please try again");
                     newCategoryEntry = Console.ReadLine();
                 }
                 
@@ -176,7 +179,27 @@ namespace PhoneBook
 
         private void EditCategoriesMenu()
         {
-            throw new NotImplementedException();
+            var categories = query.AllCategories();
+            var categoryNameToEdit = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Please select a category to edit:")
+                    .PageSize(12)
+                    .AddChoices(categories.Select(c => c.Name))
+                    .AddChoices("Go back")
+                    );
+            var categoryId = categories.Find(c => c.Name == categoryNameToEdit).Id;
+            // Newborn baby is making it difficult to even think about making these new category names a single function
+            Console.WriteLine("Enter new category name");
+            string? newCategoryName = Console.ReadLine();
+            while (string.IsNullOrEmpty(newCategoryName) || categories.Exists(category => category.Name == newCategoryName))
+            {
+                if (string.IsNullOrEmpty(newCategoryName))
+                    Console.WriteLine("Cannot be blank");
+                else
+                    Console.WriteLine($"\"{newCategoryName}\" already exists, please try again");
+                newCategoryName = Console.ReadLine();
+            }
+            query.UpdateCategory(categoryId, newCategoryName);
         }
     }
 }
