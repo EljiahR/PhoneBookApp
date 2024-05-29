@@ -122,13 +122,13 @@ namespace PhoneBook
 
             // Getting new contact phone number
             Console.Clear();
-            Console.WriteLine($"Name: {newName}\n\tEmail: {newEmail}");
+            Console.WriteLine($"Name: {newName}\tEmail: {newEmail}\n");
             string? newPhone = Validation.PhoneNumber();
 
             // Getting category fro new contact
             Console.Clear();
             int newCategoryId;
-            Console.WriteLine($"Name: {newName}\n\tEmail: {newEmail}\tPhone: {newPhone}");
+            Console.WriteLine($"Name: {newName}\tEmail: {newEmail}\tPhone: {newPhone}\n");
             var newCategory = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Please select a category:")
@@ -189,7 +189,53 @@ namespace PhoneBook
 
         private void EditContactsMenu()
         {
-            throw new NotImplementedException();
+            var contacts = query.AllContacts();
+            var categories = query.AllCategories();
+            var contactName = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Select contact to edit:")
+                    .PageSize(10)
+                    .AddChoices(contacts.Select(c => c.Name + " " + c.PhoneNumber))
+                    .AddChoices("Go back"));
+            if(contactName != "Go back")
+            {
+                var contact = contacts.Find(c => c.Name + " " + c.PhoneNumber == contactName);
+               
+
+                string? option;
+                string newName = "";
+                string newEmail= "";
+                string newPhone = "";
+                int newCategoryId = -1;
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("Current:");
+                    Console.WriteLine($"\tName: {contact.Name} Email: {contact.Email} Phone Number: {contact.PhoneNumber} Category: {contact.Category.Name}");
+                    if(!string.IsNullOrEmpty(newName) || !string.IsNullOrEmpty(newEmail) || !string.IsNullOrEmpty(newPhone) || newCategoryId > -1)
+                    {
+                        Console.WriteLine($"\t{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName} ")}{(string.IsNullOrEmpty(newEmail) ? "" : $"Email: {newEmail} ")}{(string.IsNullOrEmpty(newPhone) ? "" : $"Phone Number: {newPhone} ")}{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName}")}");
+                    }
+                    option = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("Select category to edit or select Finished when done")
+                            .PageSize(5)
+                            .AddChoices(new[] {"Name", "Email", "Phone Number", "Category", "Finished"}));
+                    switch(option)
+                    {
+                        case "Name":
+                            break;
+                        case "Email":
+                            break;
+                        case "Phone Number":
+                            break;
+                        case "Category":
+                            break;
+                        case "Finished":
+                            break;
+                    }
+                } while (option != "Finished");
+            }
         }
 
         private void EditCategoriesMenu()
