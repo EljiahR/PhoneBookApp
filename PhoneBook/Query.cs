@@ -27,12 +27,12 @@
                     .OrderBy(c => c.Name).ToList();
         }
 
-        public int AddCategory(string name)
+        public Category AddCategory(string name)
         {
             Category newCategory = new Category { Name = name };
             db.Categories.Add(newCategory);
             db.SaveChanges();
-            return newCategory.Id;
+            return newCategory;
         }
 
         public void AddContact(string name, string email, string phone, int categoryId)
@@ -46,7 +46,37 @@
             db.Contacts.Add(new Contact { Name = name, Email = email, PhoneNumber = phone, CategoryId = categoryId });
             db.SaveChanges();
         }
-        
+
+        public void UpdateContact(int id, string newName, string newEmail, string newPhone, int newCategoryId)
+        {
+            Contact contactToUpdate = db.Contacts.Where(c => c.Id == id).FirstOrDefault();
+            if(!string.IsNullOrEmpty(newName)) contactToUpdate.Name = newName;
+            if (!string.IsNullOrEmpty(newEmail)) contactToUpdate.Name = newEmail;
+            if (!string.IsNullOrEmpty(newPhone)) contactToUpdate.Name = newPhone;
+            if(newCategoryId != -1)
+            {
+                if(newCategoryId == 0)
+                {
+                    contactToUpdate.CategoryId = null;
+                    contactToUpdate.Category = null;
+                }
+                else
+                {
+                    contactToUpdate.CategoryId = newCategoryId;
+                    contactToUpdate.Category = db.Categories.Where(c => c.Id == newCategoryId).FirstOrDefault();
+                }
+            }
+            db.SaveChanges();
+        }
+
+        public void DeleteContact(int id)
+        {
+            Contact contactToDelete = db.Contacts
+                                            .Where(c => c.Id == id).First();
+            db.Remove(contactToDelete);
+            db.SaveChanges();
+        }
+
         public void UpdateCategory(int id, string newName)
         {
             Category categoryToUpdate = db.Categories

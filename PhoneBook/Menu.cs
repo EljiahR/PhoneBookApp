@@ -129,38 +129,9 @@ namespace PhoneBook
             Console.Clear();
             int newCategoryId;
             Console.WriteLine($"Name: {newName}\tEmail: {newEmail}\tPhone: {newPhone}\n");
-            var newCategory = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Please select a category:")
-                    .PageSize(12)
-                    .AddChoices(categories.Select(c => c.Name))
-                    .AddChoices(new[] { "New Category", "Leave Blank"})
-                    );
-            if(newCategory == "Leave Blank")
-            {
-                newCategoryId = -1;
-            } else if(newCategory == "New category")
-            {
-                Console.WriteLine("Enter new category name");
-                string? newCategoryEntry = Console.ReadLine();
-                while (string.IsNullOrEmpty(newCategoryEntry) || categories.Exists(category => category.Name == newCategoryEntry))
-                {
-                    if (string.IsNullOrEmpty(newCategoryEntry))
-                        Console.WriteLine("Cannot be blank");
-                    else
-                        Console.WriteLine($"\"{newCategoryEntry}\" already exists, please try again");
-                    newCategoryEntry = Console.ReadLine();
-                }
+            var newCategory = Validation.Category(categories, query);
 
-                newCategoryId = query.AddCategory(newCategoryEntry);
-            } else
-            {
-                
-                newCategoryId = categories.Find(c => c.Name == newCategory).Id;
-
-            }
-
-            query.AddContact(newName, newEmail, newPhone, newCategoryId);
+            query.AddContact(newName, newEmail, newPhone, newCategory.Id);
             Console.WriteLine($"{newName} successfully added. Press Enter to return to main menu");
             Console.ReadLine();
 
@@ -200,41 +171,70 @@ namespace PhoneBook
             if(contactName != "Go back")
             {
                 var contact = contacts.Find(c => c.Name + " " + c.PhoneNumber == contactName);
-               
+                var editOrDelete = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("Select an option")
+                    .PageSize(2)
+                    .AddChoices(new[] {"Edit", "Delete"}));
 
-                string? option;
-                string newName = "";
-                string newEmail= "";
-                string newPhone = "";
-                int newCategoryId = -1;
-                do
+                if(editOrDelete == "Edit")
                 {
-                    Console.Clear();
-                    Console.WriteLine("Current:");
-                    Console.WriteLine($"\tName: {contact.Name} Email: {contact.Email} Phone Number: {contact.PhoneNumber} Category: {contact.Category.Name}");
-                    if(!string.IsNullOrEmpty(newName) || !string.IsNullOrEmpty(newEmail) || !string.IsNullOrEmpty(newPhone) || newCategoryId > -1)
+                    string? option;
+                    string? newName = "";
+                    string newEmail = "";
+                    string newPhone = "";
+                    int newCategoryId = 0;
+                    do
                     {
-                        Console.WriteLine($"\t{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName} ")}{(string.IsNullOrEmpty(newEmail) ? "" : $"Email: {newEmail} ")}{(string.IsNullOrEmpty(newPhone) ? "" : $"Phone Number: {newPhone} ")}{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName}")}");
-                    }
-                    option = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Select category to edit or select Finished when done")
-                            .PageSize(5)
-                            .AddChoices(new[] {"Name", "Email", "Phone Number", "Category", "Finished"}));
-                    switch(option)
-                    {
-                        case "Name":
-                            break;
-                        case "Email":
-                            break;
-                        case "Phone Number":
-                            break;
-                        case "Category":
-                            break;
-                        case "Finished":
-                            break;
-                    }
-                } while (option != "Finished");
+                        Console.Clear();
+                        Console.WriteLine("Current:");
+                        Console.WriteLine($"\tName: {contact.Name} Email: {contact.Email} Phone Number: {contact.PhoneNumber} Category: {contact.Category.Name}");
+                        if (!string.IsNullOrEmpty(newName) || !string.IsNullOrEmpty(newEmail) || !string.IsNullOrEmpty(newPhone) || newCategoryId > -1)
+                        {
+                            Console.WriteLine($"\t{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName} ")}{(string.IsNullOrEmpty(newEmail) ? "" : $"Email: {newEmail} ")}{(string.IsNullOrEmpty(newPhone) ? "" : $"Phone Number: {newPhone} ")}{(newCategoryId > 0 ? "" : $"category: {categories.Find(c => c.Id == newCategoryId).Name}")}");
+                        }
+                        option = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("Select category to edit or select Finished when done")
+                                .PageSize(5)
+                                .AddChoices(new[] { "Name", "Email", "Phone Number", "Category", "Finished" }));
+                        switch (option)
+                        {
+                            case "Name":
+                                Console.WriteLine("Enter a new name:");
+                                newName = Console.ReadLine();
+                                while (string.IsNullOrEmpty(newName))
+                                {
+                                    Console.WriteLine("Invalid entry, cannot be blank");
+                                    newName = Console.ReadLine();
+                                }
+                                break;
+                            case "Email":
+                                newEmail = Validation.Email();
+                                break;
+                            case "Phone Number":
+                                newPhone = Validation.PhoneNumber();
+                                break;
+                            case "Category":
+                                var newCategory = Validation.Category(categories, query);
+                                newCategoryId = newCategory.Id;
+                                break;
+                            case "Finished":
+                                break;
+                        }
+                    } while (option != "Finished");
+                    query.UpdateContact(contact.Id, newName, newEmail, newPhone, newCategoryId);
+                    Console.WriteLine("Contact updated!");
+                    Console.WriteLine("Press Enter to return to main menu");
+                    Console.ReadLine();
+                } else
+                {
+                    query.DeleteContact(contact.Id);
+                    Console.WriteLine("Contact deleted.");
+                    Console.WriteLine("Press Enter to return to main menu");
+                    Console.ReadLine();
+                }
+                
             }
         }
 
@@ -281,5 +281,7 @@ namespace PhoneBook
             }
             
         }
+
+       
     }
 }
