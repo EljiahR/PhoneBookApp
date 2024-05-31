@@ -57,7 +57,7 @@ namespace PhoneBook
             {
                 return new Category { Id = -1 };
             }
-            else if (newCategory == "New category")
+            else if (newCategory == "New Category")
             {
                 Console.WriteLine("Enter new category name");
                 string? newCategoryEntry = Console.ReadLine();

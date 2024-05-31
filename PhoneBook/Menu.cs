@@ -71,7 +71,7 @@ namespace PhoneBook
                 Console.WriteLine(contact.Name);
                 Console.WriteLine($"\t{contact.Email}");
                 Console.WriteLine($"\t{contact.PhoneNumber}");
-                Console.WriteLine($"\t{(contact.CategoryId == null ? "N/A" : contact.Category.Name)}\n");
+                Console.WriteLine($"\t{(contact.Category == null ? "Uncatergorized" : contact.Category.Name)}\n");
             }
 
             Console.WriteLine("Press Enter to go back"); // Needs replaced to show contacts by category, not just categories
@@ -174,7 +174,6 @@ namespace PhoneBook
                 var editOrDelete = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                     .Title("Select an option")
-                    .PageSize(2)
                     .AddChoices(new[] {"Edit", "Delete"}));
 
                 if(editOrDelete == "Edit")
@@ -188,10 +187,10 @@ namespace PhoneBook
                     {
                         Console.Clear();
                         Console.WriteLine("Current:");
-                        Console.WriteLine($"\tName: {contact.Name} Email: {contact.Email} Phone Number: {contact.PhoneNumber} Category: {contact.Category.Name}");
-                        if (!string.IsNullOrEmpty(newName) || !string.IsNullOrEmpty(newEmail) || !string.IsNullOrEmpty(newPhone) || newCategoryId > -1)
+                        Console.WriteLine($"\tName: {contact.Name} Email: {contact.Email} Phone Number: {contact.PhoneNumber} Category: {(contact.Category != null ? contact.Category.Name : "Uncatergorized")}");
+                        if (!string.IsNullOrEmpty(newName) || !string.IsNullOrEmpty(newEmail) || !string.IsNullOrEmpty(newPhone) || newCategoryId > 0)
                         {
-                            Console.WriteLine($"\t{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName} ")}{(string.IsNullOrEmpty(newEmail) ? "" : $"Email: {newEmail} ")}{(string.IsNullOrEmpty(newPhone) ? "" : $"Phone Number: {newPhone} ")}{(newCategoryId > 0 ? "" : $"category: {categories.Find(c => c.Id == newCategoryId).Name}")}");
+                            Console.WriteLine($"\t{(string.IsNullOrEmpty(newName) ? "" : $"Name: {newName} ")}{(string.IsNullOrEmpty(newEmail) ? "" : $"Email: {newEmail} ")}{(string.IsNullOrEmpty(newPhone) ? "" : $"Phone Number: {newPhone} ")}{(newCategoryId < 1 ? "" : $"category: {categories.Find(c => c.Id == newCategoryId).Name}")}");
                         }
                         option = AnsiConsole.Prompt(
                             new SelectionPrompt<string>()
@@ -218,6 +217,7 @@ namespace PhoneBook
                             case "Category":
                                 var newCategory = Validation.Category(categories, query);
                                 newCategoryId = newCategory.Id;
+                                categories = query.AllCategories();
                                 break;
                             case "Finished":
                                 break;

@@ -43,7 +43,7 @@
                 newContact.CategoryId = categoryId; 
                 newContact.Category = db.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
             }
-            db.Contacts.Add(new Contact { Name = name, Email = email, PhoneNumber = phone, CategoryId = categoryId });
+            db.Contacts.Add(newContact);
             db.SaveChanges();
         }
 
@@ -51,11 +51,11 @@
         {
             Contact contactToUpdate = db.Contacts.Where(c => c.Id == id).FirstOrDefault();
             if(!string.IsNullOrEmpty(newName)) contactToUpdate.Name = newName;
-            if (!string.IsNullOrEmpty(newEmail)) contactToUpdate.Name = newEmail;
-            if (!string.IsNullOrEmpty(newPhone)) contactToUpdate.Name = newPhone;
-            if(newCategoryId != -1)
+            if (!string.IsNullOrEmpty(newEmail)) contactToUpdate.Email = newEmail;
+            if (!string.IsNullOrEmpty(newPhone)) contactToUpdate.PhoneNumber = newPhone;
+            if(newCategoryId != 0)
             {
-                if(newCategoryId == 0)
+                if(newCategoryId == -1)
                 {
                     contactToUpdate.CategoryId = null;
                     contactToUpdate.Category = null;
