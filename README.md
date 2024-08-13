@@ -1,6 +1,6 @@
-<h1>Coding Tracker Project</h1>
+<h1>Phone Book Project</h1>
 <h3>Description</h3>
-<p>Simple project made to track length of coding sessions using an sqlite database via a C# console application, similar to the habit tracker with a few additional challenges</p>
+<p>Project made to perform CRUD operations using a SQL Server via a C# console application</p>
 <h3>Assigned requirements</h3>
 <ul>
   <li>This is an application where you should record contacts with their phone numbers.</li>
